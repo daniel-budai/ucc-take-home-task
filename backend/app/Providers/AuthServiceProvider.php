@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Chat;
 use App\Models\Event;
+use App\Policies\ChatPolicy;
 use App\Policies\EventPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -15,6 +17,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Event::class => EventPolicy::class,
+        Chat::class => ChatPolicy::class,
     ];
 
     /**

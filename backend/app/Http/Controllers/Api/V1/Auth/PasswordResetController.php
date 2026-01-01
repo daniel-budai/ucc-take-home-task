@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
@@ -16,7 +18,9 @@ class PasswordResetController extends Controller
 
     public function request(PasswordResetRequest $request): JsonResponse
     {
-        $this->authService->requestPasswordReset($request->validated()['email']);
+        $validated = $request->validated();
+        
+        $this->authService->requestPasswordReset($validated['email']);
 
         return response()->json([
             'success' => true,
@@ -26,10 +30,12 @@ class PasswordResetController extends Controller
 
     public function reset(PasswordResetConfirmRequest $request): JsonResponse
     {
+        $validated = $request->validated();
+        
         $this->authService->resetPassword(
-            email: $request->validated()['email'],
-            password: $request->validated()['password'],
-            token: $request->validated()['token']
+            email: $validated['email'],
+            password: $validated['password'],
+            token: $validated['token']
         );
 
         return response()->json([

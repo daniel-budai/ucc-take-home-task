@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
@@ -17,9 +19,11 @@ class LoginController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
+        $validated = $request->validated();
+        
         $result = $this->authService->login(
-            email: $request->validated()['email'],
-            password: $request->validated()['password'],
+            email: $validated['email'],
+            password: $validated['password'],
             remember: $request->boolean('remember')
         );
 

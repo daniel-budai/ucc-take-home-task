@@ -60,6 +60,30 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the chats for the user.
+     */
+    public function chats(): HasMany
+    {
+        return $this->hasMany(Chat::class);
+    }
+
+    /**
+     * Get the chats assigned to this agent.
+     */
+    public function assignedChats(): HasMany
+    {
+        return $this->hasMany(Chat::class, 'assigned_agent_id');
+    }
+
+    /**
+     * Get the messages for the user.
+     */
+    public function messages(): HasMany
+    {
+        return $this->hasMany(Message::class);
+    }
+
+    /**
      * Check if user is a helpdesk agent.
      */
     public function isHelpdeskAgent(): bool
