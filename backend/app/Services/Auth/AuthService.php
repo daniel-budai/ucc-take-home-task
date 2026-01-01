@@ -54,6 +54,9 @@ class AuthService
             function (User $user, string $password) {
                 $user->password = Hash::make($password);
                 $user->save();
+                
+                // Revoke all existing tokens for security
+                $user->tokens()->delete();
             }
         );
 
