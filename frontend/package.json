@@ -6,16 +6,42 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint src --fix",
+    "format": "prettier --write src"
   },
   "dependencies": {
-    "vue": "^3.5.24"
+    "@headlessui/vue": "^1.7.23",
+    "@heroicons/vue": "^2.2.0",
+    "@primevue/themes": "^4.5.4",
+    "@vee-validate/zod": "^4.15.1",
+    "axios": "^1.13.2",
+    "dayjs": "^1.11.19",
+    "laravel-echo": "^2.2.7",
+    "pinia": "^3.0.4",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.5.4",
+    "pusher-js": "^8.4.0",
+    "vee-validate": "^4.15.1",
+    "vue": "^3.5.24",
+    "vue-router": "^4.6.4",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^24.10.1",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
+    "autoprefixer": "^10.4.23",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.6.2",
+    "postcss": "^8.5.6",
+    "prettier": "^3.7.4",
+    "tailwindcss": "^4.1.18",
     "typescript": "~5.9.3",
+    "typescript-eslint": "^8.51.0",
     "vite": "^7.2.4",
     "vue-tsc": "^3.1.4"
   }
