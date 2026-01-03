@@ -22,6 +22,7 @@ export default [
       ecmaVersion: 'latest',
       sourceType: 'module',
       globals: {
+        // Browser globals
         window: 'readonly',
         document: 'readonly',
         console: 'readonly',
@@ -31,6 +32,16 @@ export default [
         setInterval: 'readonly',
         clearInterval: 'readonly',
         fetch: 'readonly',
+        // DOM types
+        HTMLElement: 'readonly',
+        KeyboardEvent: 'readonly',
+        MouseEvent: 'readonly',
+        Event: 'readonly',
+        FormData: 'readonly',
+        File: 'readonly',
+        Blob: 'readonly',
+        URL: 'readonly',
+        Date: 'readonly',
       },
     },
   },

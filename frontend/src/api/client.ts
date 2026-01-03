@@ -1,7 +1,7 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
 
 // Create axios instance
-const api = axios.create({
+const client = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
   headers: {
     'Content-Type': 'application/json',
@@ -13,7 +13,7 @@ const api = axios.create({
 })
 
 // Request interceptor - Add auth token to requests
-api.interceptors.request.use(
+client.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem('token')
 
@@ -29,7 +29,7 @@ api.interceptors.request.use(
 )
 
 // Response interceptor - Handle errors globally
-api.interceptors.response.use(
+client.interceptors.response.use(
   (response) => {
     return response
   },
@@ -49,4 +49,10 @@ api.interceptors.response.use(
   }
 )
 
-export default api
+export default client
+
+
+
+
+
+
