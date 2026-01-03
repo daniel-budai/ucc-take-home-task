@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { userSchema } from '@/types/auth'
+import { VALIDATION_LIMITS } from '@/utils/constants'
 
 // Chat status
 export const chatStatusSchema = z.enum([
@@ -46,23 +47,25 @@ export type Chat = z.infer<typeof chatSchema>
 
 // Create chat payload
 export const createChatSchema = z.object({
-  subject: z.string().min(1, 'Subject is required'),
-  message: z.string().min(1, 'Message is required'),
+  subject: z
+    .string()
+    .min(VALIDATION_LIMITS.SUBJECT.MIN_LENGTH, `Subject must be at least ${VALIDATION_LIMITS.SUBJECT.MIN_LENGTH} characters`)
+    .max(VALIDATION_LIMITS.SUBJECT.MAX_LENGTH, `Subject must not exceed ${VALIDATION_LIMITS.SUBJECT.MAX_LENGTH} characters`)
+    .trim(),
+  message: z
+    .string()
+    .min(VALIDATION_LIMITS.MESSAGE.MIN_LENGTH, 'Message is required')
+    .max(VALIDATION_LIMITS.MESSAGE.MAX_LENGTH, `Message must not exceed ${VALIDATION_LIMITS.MESSAGE.MAX_LENGTH} characters`)
+    .trim(),
 })
 export type CreateChatPayload = z.infer<typeof createChatSchema>
 
 // Send message payload
 export const sendMessageSchema = z.object({
-  content: z.string().min(1, 'Message cannot be empty'),
+  content: z
+    .string()
+    .min(VALIDATION_LIMITS.MESSAGE.MIN_LENGTH, 'Message cannot be empty')
+    .max(VALIDATION_LIMITS.MESSAGE.MAX_LENGTH, `Message must not exceed ${VALIDATION_LIMITS.MESSAGE.MAX_LENGTH} characters`)
+    .trim(),
 })
 export type SendMessagePayload = z.infer<typeof sendMessageSchema>
-
-// Chat list
-export const chatsListSchema = z.array(chatSchema)
-export type ChatsList = z.infer<typeof chatsListSchema>
-
-
-
-
-
-

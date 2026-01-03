@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useUiStore } from '@/stores/ui'
+import { ROUTES } from '@/utils/constants'
 import Menu from 'primevue/menu'
 import type { MenuItem } from 'primevue/menuitem'
 
@@ -16,14 +17,14 @@ const menuItems = computed<MenuItem[]>(() => {
     {
       label: 'Events',
       icon: 'pi pi-calendar',
-      command: () => router.push('/events'),
-      class: route.path === '/events' ? 'bg-primary-50' : '',
+      command: () => router.push(ROUTES.EVENTS),
+      class: route.path === ROUTES.EVENTS ? 'bg-primary-50' : '',
     },
     {
       label: 'Help Desk',
       icon: 'pi pi-comments',
-      command: () => router.push('/chat'),
-      class: route.path === '/chat' ? 'bg-primary-50' : '',
+      command: () => router.push(ROUTES.CHAT),
+      class: route.path === ROUTES.CHAT ? 'bg-primary-50' : '',
     },
   ]
 
@@ -32,8 +33,8 @@ const menuItems = computed<MenuItem[]>(() => {
     items.push({
       label: 'Agent Dashboard',
       icon: 'pi pi-headphones',
-      command: () => router.push('/agent'),
-      class: route.path === '/agent' ? 'bg-primary-50' : '',
+      command: () => router.push(ROUTES.AGENT_DASHBOARD),
+      class: route.path === ROUTES.AGENT_DASHBOARD ? 'bg-primary-50' : '',
     })
   }
 

@@ -1,15 +1,10 @@
 // Re-export all composables
-// Usage: import { useAuth, useEvents, useChat } from '@/composables'
+// Usage: import { useAuth, useNotification, useMessage } from '@/composables'
 
 export { useAuth } from '@/composables/useAuth'
-export { useEvents } from '@/composables/useEvents'
-export { useChat } from '@/composables/useChat'
-export { useChatAgent } from '@/composables/useChatAgent'
+export { useChatChannel } from '@/composables/useChatChannel'
 export { useNotification } from '@/composables/useNotification'
 export { useConfirmDialog } from '@/composables/useConfirm'
 
-
-
-
-
-
+// Re-export message-related composables
+export * from '@/composables/message'

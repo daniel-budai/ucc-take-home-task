@@ -5,13 +5,6 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 
 /**
- * Format date as "Jan 5, 2026"
- */
-export function formatDate(date: string | Date): string {
-  return dayjs(date).format('MMM D, YYYY')
-}
-
-/**
  * Format date and time as "Jan 5, 2026 3:30 PM"
  */
 export function formatDateTime(date: string | Date): string {
@@ -38,23 +31,3 @@ export function formatTime(date: string | Date): string {
 export function isPast(date: string | Date): boolean {
   return dayjs(date).isBefore(dayjs())
 }
-
-/**
- * Check if date is today
- */
-export function isToday(date: string | Date): boolean {
-  return dayjs(date).isSame(dayjs(), 'day')
-}
-
-/**
- * Convert to ISO string for API
- */
-export function toISOString(date: Date): string {
-  return dayjs(date).toISOString()
-}
-
-
-
-
-
-

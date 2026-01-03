@@ -27,9 +27,3 @@ export const updateEventSchema = z.object({
   description: z.string(),
 })
 export type UpdateEventPayload = z.infer<typeof updateEventSchema>
-
-// Events list response
-export const eventsListSchema = z.array(eventSchema)
-export type EventsList = z.infer<typeof eventsListSchema>
-
-

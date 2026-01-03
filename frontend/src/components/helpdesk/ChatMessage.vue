@@ -1,50 +1,33 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { Message } from '@/types'
 import { formatTime } from '@/utils/date'
 import Avatar from 'primevue/avatar'
+import MessageBubble from '@/components/helpdesk/MessageBubble.vue'
+import { useMessage } from '@/composables/message'
 
-const { message } = defineProps<{
+const props = defineProps<{
   message: Message
 }>()
 
-const isUser = computed(() => message.type === 'user')
-const isAi = computed(() => message.type === 'ai')
-const isAgent = computed(() => message.type === 'agent')
-const isSystem = computed(() => message.type === 'system')
-
-const avatarLabel = computed(() => {
-  switch (message.type) {
-    case 'user':
-      return 'U'
-    case 'ai':
-      return 'AI'
-    case 'agent':
-      return 'A'
-    default:
-      return 'S'
-  }
-})
-
-const avatarClass = computed(() => {
-  switch (message.type) {
-    case 'user':
-      return 'bg-blue-500'
-    case 'ai':
-      return 'bg-purple-500'
-    case 'agent':
-      return 'bg-green-500'
-    default:
-      return 'bg-gray-500'
-  }
-})
+// Use the composable to get all message-related computed properties
+const {
+  isUser,
+  avatarLabel,
+  avatarClass,
+  showAvatar,
+  senderLabel,
+  senderType,
+  variant,
+  showAsSystem,
+  justifyClass,
+} = useMessage(props.message)
 </script>
 
 <template>
   <!-- System message -->
-  <div v-if="isSystem" class="text-center">
+  <div v-if="showAsSystem" class="text-center">
     <span class="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-      {{ message.content }}
+      {{ props.message.content }}
     </span>
   </div>
 
@@ -52,58 +35,32 @@ const avatarClass = computed(() => {
   <div
     v-else
     class="flex gap-3"
-    :class="{
-      'justify-end': isUser,
-      'justify-start': !isUser,
-    }"
+    :class="justifyClass"
   >
-    <!-- Avatar (non-user) -->
+    <!-- Avatar (non-user messages) -->
     <Avatar
-      v-if="!isUser"
+      v-if="showAvatar"
       :label="avatarLabel"
       shape="circle"
-      class="text-white flex-shrink-0"
+      class="text-white shrink-0"
       :class="avatarClass"
     />
 
     <!-- Message bubble -->
-    <div
-      class="max-w-[70%] rounded-lg px-4 py-2"
-      :class="{
-        'bg-blue-500 text-white': isUser,
-        'bg-white border border-gray-200': !isUser,
-      }"
-    >
-      <!-- Sender label for AI/Agent -->
-      <p
-        v-if="isAi || isAgent"
-        class="text-xs font-medium mb-1"
-        :class="isAi ? 'text-purple-600' : 'text-green-600'"
-      >
-        {{ isAi ? 'AI Assistant' : 'Support Agent' }}
-      </p>
+    <MessageBubble
+      :variant="variant"
+      :content="props.message.content"
+      :timestamp="formatTime(props.message.created_at)"
+      :sender-label="senderLabel"
+      :sender-type="senderType"
+    />
 
-      <!-- Message content -->
-      <p class="whitespace-pre-wrap">{{ message.content }}</p>
-
-      <!-- Timestamp -->
-      <p
-        class="text-xs mt-1"
-        :class="{
-          'text-blue-100': isUser,
-          'text-gray-400': !isUser,
-        }"
-      >
-        {{ formatTime(message.created_at) }}
-      </p>
-    </div>
-
-    <!-- Avatar (user) -->
+    <!-- Avatar (user messages) -->
     <Avatar
       v-if="isUser"
       :label="avatarLabel"
       shape="circle"
-      class="text-white flex-shrink-0"
+      class="text-white shrink-0"
       :class="avatarClass"
     />
   </div>

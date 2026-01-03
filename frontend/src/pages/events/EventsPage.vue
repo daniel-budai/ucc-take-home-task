@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useEvents } from '@/composables/useEvents'
+import { storeToRefs } from 'pinia'
+import { useEventsStore } from '@/stores/events'
 import { useConfirmDialog } from '@/composables/useConfirm'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import EventList from '@/components/events/EventList.vue'
@@ -9,7 +10,8 @@ import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import type { Event, CreateEventPayload } from '@/types'
 
-const { events, loading, fetchEvents, createEvent, updateEvent, deleteEvent } = useEvents()
+const eventsStore = useEventsStore()
+const { events, loading } = storeToRefs(eventsStore)
 const { confirmDelete } = useConfirmDialog()
 
 const showDialog = ref(false)
@@ -18,7 +20,7 @@ const formLoading = ref(false)
 const formKey = ref(0)
 
 onMounted(() => {
-  fetchEvents()
+  eventsStore.fetchEvents()
 })
 
 function openCreateDialog() {
@@ -43,12 +45,12 @@ async function handleSubmit(payload: CreateEventPayload) {
   try {
     if (selectedEvent.value) {
       // Update (only description per requirements)
-      await updateEvent(selectedEvent.value.id, {
+      await eventsStore.updateEvent(selectedEvent.value.id, {
         description: payload.description || '',
       })
     } else {
       // Create
-      await createEvent(payload)
+      await eventsStore.createEvent(payload)
     }
     closeDialog()
   } finally {
@@ -58,7 +60,7 @@ async function handleSubmit(payload: CreateEventPayload) {
 
 function handleDelete(event: Event) {
   confirmDelete(`Are you sure you want to delete "${event.title}"?`, async () => {
-    await deleteEvent(event.id)
+    await eventsStore.deleteEvent(event.id)
   })
 }
 </script>
@@ -103,5 +105,3 @@ function handleDelete(event: Event) {
     </div>
   </DefaultLayout>
 </template>
-
-

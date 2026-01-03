@@ -8,9 +8,6 @@ declare global {
   }
 }
 
-// Enable Pusher logging for debugging
-Pusher.logToConsole = true
-
 window.Pusher = Pusher
 
 let echoInstance: Echo<'reverb'> | null = null
@@ -39,14 +36,6 @@ export function getEcho(): Echo<'reverb'> {
     },
   }
   
-  console.log('[Echo] Initializing with config:', {
-    key: config.key,
-    wsHost: config.wsHost,
-    wsPort: config.wsPort,
-    authEndpoint: config.authEndpoint,
-    hasToken: !!token,
-  })
-
   echoInstance = new Echo(config)
 
   return echoInstance
@@ -58,10 +47,3 @@ export function resetEcho(): void {
     echoInstance = null
   }
 }
-
-// Update auth token when it changes
-export function updateEchoAuth(): void {
-  resetEcho()
-  // Will be recreated with new token on next getEcho() call
-}
-

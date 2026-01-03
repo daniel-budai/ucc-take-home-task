@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import Toast from 'primevue/toast'
 </script>
 
 <template>
   <div
     class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4"
   >
-    <Toast position="top-right" />
 
     <div class="w-full max-w-md">
       <!-- Logo / Brand -->

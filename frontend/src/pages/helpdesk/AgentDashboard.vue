@@ -1,101 +1,51 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
-import { useChatAgent } from '@/composables/useChatAgent'
-import { getEcho } from '@/utils/echo'
+import { ref, onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useChatAgentStore } from '@/stores/chatAgent'
+import { useChatChannel } from '@/composables/useChatChannel'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import ChatList from '@/components/helpdesk/ChatList.vue'
 import ChatWindow from '@/components/helpdesk/ChatWindow.vue'
 import Button from 'primevue/button'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
-import type { Chat, Message } from '@/types'
+import type { Chat } from '@/types'
 
-const {
-  unassignedChats,
-  myChats,
-  resolvedChats,
-  currentChat,
-  messages,
-  loading,
-  fetchAgentChats,
-  fetchUnassigned,
-  assignChat,
-  replyToChat,
-  resolveChat,
-  selectChat,
-  addMessage,
-} = useChatAgent()
+const chatAgentStore = useChatAgentStore()
+const { unassignedChats, myChats, resolvedChats, currentChat, messages, loading } =
+  storeToRefs(chatAgentStore)
+
+// Subscribe to real-time chat updates
+useChatChannel(currentChat, chatAgentStore.addMessage)
 
 const sendingMessage = ref(false)
 
-// Track the current channel subscription
-let currentChannelId: number | null = null
-
-// Subscribe to chat channel for real-time updates
-watch(
-  currentChat,
-  (newChat, oldChat) => {
-    const echo = getEcho()
-
-    // Leave old channel
-    if (oldChat && currentChannelId === oldChat.id) {
-      console.log('[AgentChat] Leaving channel:', `chat.${oldChat.id}`)
-      echo.leave(`chat.${oldChat.id}`)
-      currentChannelId = null
-    }
-
-    // Join new channel
-    if (newChat) {
-      currentChannelId = newChat.id
-      console.log('[AgentChat] Subscribing to channel:', `chat.${newChat.id}`)
-      echo
-        .private(`chat.${newChat.id}`)
-        .listen('.message.sent', (e: { message: Message }) => {
-          console.log('[AgentChat] Received message:', e)
-          addMessage(e.message)
-        })
-        .error((error: unknown) => {
-          console.error('[AgentChat] Channel subscription error:', error)
-        })
-    }
-  },
-  { immediate: true }
-)
-
 onMounted(() => {
-  fetchAgentChats()
-  fetchUnassigned()
-})
-
-onUnmounted(() => {
-  // Clean up channel subscription
-  if (currentChannelId) {
-    const echo = getEcho()
-    echo.leave(`chat.${currentChannelId}`)
-  }
+  chatAgentStore.fetchAgentChats()
+  chatAgentStore.fetchUnassigned()
 })
 
 async function handleAssign() {
   if (!currentChat.value) return
-  await assignChat(currentChat.value.id)
+  await chatAgentStore.assignChat(currentChat.value.id)
 }
 
 async function handleResolve() {
   if (!currentChat.value) return
-  await resolveChat(currentChat.value.id)
+  await chatAgentStore.resolveChat(currentChat.value.id)
 }
 
 async function handleSendReply(content: string) {
   sendingMessage.value = true
   try {
-    await replyToChat(content)
+    await chatAgentStore.replyToChat(content)
   } finally {
     sendingMessage.value = false
   }
 }
 
 function handleSelectChat(chat: Chat) {
-  selectChat(chat)
+  chatAgentStore.selectChat(chat)
 }
 </script>
 
@@ -166,5 +116,3 @@ function handleSelectChat(chat: Chat) {
     </div>
   </DefaultLayout>
 </template>
-
-
