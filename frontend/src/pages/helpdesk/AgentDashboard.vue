@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useChatAgent } from '@/composables/useChatAgent'
+import { getEcho } from '@/utils/echo'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import ChatList from '@/components/helpdesk/ChatList.vue'
 import ChatWindow from '@/components/helpdesk/ChatWindow.vue'
 import Button from 'primevue/button'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
-import type { Chat } from '@/types'
+import type { Chat, Message } from '@/types'
 
 const {
   unassignedChats,
@@ -22,13 +23,56 @@ const {
   replyToChat,
   resolveChat,
   selectChat,
+  addMessage,
 } = useChatAgent()
 
 const sendingMessage = ref(false)
 
+// Track the current channel subscription
+let currentChannelId: number | null = null
+
+// Subscribe to chat channel for real-time updates
+watch(
+  currentChat,
+  (newChat, oldChat) => {
+    const echo = getEcho()
+
+    // Leave old channel
+    if (oldChat && currentChannelId === oldChat.id) {
+      console.log('[AgentChat] Leaving channel:', `chat.${oldChat.id}`)
+      echo.leave(`chat.${oldChat.id}`)
+      currentChannelId = null
+    }
+
+    // Join new channel
+    if (newChat) {
+      currentChannelId = newChat.id
+      console.log('[AgentChat] Subscribing to channel:', `chat.${newChat.id}`)
+      echo
+        .private(`chat.${newChat.id}`)
+        .listen('.message.sent', (e: { message: Message }) => {
+          console.log('[AgentChat] Received message:', e)
+          addMessage(e.message)
+        })
+        .error((error: unknown) => {
+          console.error('[AgentChat] Channel subscription error:', error)
+        })
+    }
+  },
+  { immediate: true }
+)
+
 onMounted(() => {
   fetchAgentChats()
   fetchUnassigned()
+})
+
+onUnmounted(() => {
+  // Clean up channel subscription
+  if (currentChannelId) {
+    const echo = getEcho()
+    echo.leave(`chat.${currentChannelId}`)
+  }
 })
 
 async function handleAssign() {

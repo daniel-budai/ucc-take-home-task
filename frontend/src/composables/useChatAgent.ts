@@ -26,7 +26,8 @@ export function useChatAgent() {
     loading.value = true
     try {
       const { data } = await helpdeskApi.listAgentChats()
-      chats.value = data
+      // Laravel Resource collections wrap arrays in { data: [...] }
+      chats.value = Array.isArray(data) ? data : (data as { data: Chat[] }).data || []
     } catch {
       error('Failed to load chats')
     } finally {
@@ -37,7 +38,8 @@ export function useChatAgent() {
   async function fetchUnassigned() {
     try {
       const { data } = await helpdeskApi.listUnassigned()
-      unassignedChats.value = data
+      // Laravel Resource collections wrap arrays in { data: [...] }
+      unassignedChats.value = Array.isArray(data) ? data : (data as { data: Chat[] }).data || []
     } catch {
       error('Failed to load unassigned chats')
     }
@@ -52,6 +54,8 @@ export function useChatAgent() {
       unassignedChats.value = unassignedChats.value.filter((c) => c.id !== chatId)
       chats.value.push(chatData)
       currentChat.value = chatData
+      // Set messages from the chat data
+      messages.value = chatData.messages || []
       success('Chat assigned to you!')
       return chatData
     } catch {
@@ -64,9 +68,11 @@ export function useChatAgent() {
 
     try {
       const payload: SendMessagePayload = { content }
-      const { data } = await helpdeskApi.replyToChat(currentChat.value.id, payload)
-      messages.value.push(data)
-      return data
+      const response = await helpdeskApi.replyToChat(currentChat.value.id, payload)
+      // Laravel Resources wrap single items in { data: {...} }
+      const messageData = ((response.data as { data?: Message }).data || response.data) as Message
+      messages.value.push(messageData)
+      return messageData
     } catch {
       error('Failed to send reply')
     }
@@ -91,9 +97,30 @@ export function useChatAgent() {
     }
   }
 
-  function selectChat(chat: Chat) {
+  async function selectChat(chat: Chat) {
+    // Set the chat immediately for UI responsiveness
     currentChat.value = chat
     messages.value = chat.messages || []
+    
+    // Fetch full chat with messages if not already loaded
+    if (!chat.messages || chat.messages.length === 0) {
+      try {
+        const response = await helpdeskApi.getAgentChat(chat.id)
+        // Laravel Resources wrap single items in { data: {...} }
+        const chatData = ((response.data as { data?: Chat }).data || response.data) as Chat
+        currentChat.value = chatData
+        messages.value = chatData.messages || []
+      } catch {
+        error('Failed to load chat messages')
+      }
+    }
+  }
+
+  function addMessage(message: Message) {
+    // For real-time updates via WebSocket
+    if (!messages.value.find((m) => m.id === message.id)) {
+      messages.value.push(message)
+    }
   }
 
   return {
@@ -112,6 +139,7 @@ export function useChatAgent() {
     replyToChat,
     resolveChat,
     selectChat,
+    addMessage,
   }
 }
 

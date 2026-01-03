@@ -42,6 +42,11 @@ export const helpdeskApi = {
   listUnassigned: () => client.get<Chat[]>('/helpdesk/chats/unassigned'),
 
   /**
+   * Get a single chat with messages (agent)
+   */
+  getAgentChat: (chatId: number) => client.get<Chat>(`/helpdesk/chats/${chatId}`),
+
+  /**
    * Assign chat to current agent
    */
   assignChat: (chatId: number) => client.post<Chat>(`/helpdesk/chats/${chatId}/assign`),
