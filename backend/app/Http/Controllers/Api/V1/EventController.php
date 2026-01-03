@@ -55,7 +55,7 @@ class EventController extends Controller
         $this->authorize('update', $event);
         
         $validated = $request->validated();
-        $event = $this->eventService->updateEventDescription($event, $validated['description']);
+        $event = $this->eventService->updateEventDescription($event, $validated['description'] ?? null);
         
         return (new EventResource($event))
             ->additional(['message' => 'Event updated successfully']);

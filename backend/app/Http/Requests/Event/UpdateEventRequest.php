@@ -24,7 +24,7 @@ class UpdateEventRequest extends FormRequest
     {
         return [
             'description' => [
-                'required',
+                'nullable',
                 'string',
                 'max:5000',
             ],
@@ -34,7 +34,6 @@ class UpdateEventRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'description.required' => 'The description is required.',
             'description.max' => 'The description cannot exceed 5000 characters.',
         ];
     }

@@ -21,9 +21,9 @@ class EventService
         return $this->repository->create($data, $user);
     }
 
-    public function updateEventDescription(Event $event, string $description): Event
+    public function updateEventDescription(Event $event, ?string $description): Event
     {
-        return $this->repository->update($event, ['description' => trim($description)]);
+        return $this->repository->update($event, ['description' => $description ? trim($description) : null]);
     }
 
     public function deleteEvent(Event $event): bool
