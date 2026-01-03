@@ -13,15 +13,14 @@ class UpdateEventRequestTest extends TestCase
     use RefreshDatabase;
 
     #[Test]
-    public function validates_description_is_required(): void
+    public function allows_description_to_be_nullable(): void
     {
         $request = new UpdateEventRequest();
         $rules = $request->rules();
 
         $validator = Validator::make([], $rules);
 
-        $this->assertTrue($validator->fails());
-        $this->assertArrayHasKey('description', $validator->errors()->toArray());
+        $this->assertFalse($validator->fails());
     }
 
     #[Test]

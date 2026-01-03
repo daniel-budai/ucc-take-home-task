@@ -45,7 +45,6 @@ class EventController extends Controller
         $event = $this->eventService->createEvent($validated, Auth::user());
         
         return (new EventResource($event))
-            ->additional(['message' => 'Event created successfully'])
             ->response()
             ->setStatusCode(201);
     }
@@ -57,8 +56,7 @@ class EventController extends Controller
         $validated = $request->validated();
         $event = $this->eventService->updateEventDescription($event, $validated['description'] ?? null);
         
-        return (new EventResource($event))
-            ->additional(['message' => 'Event updated successfully']);
+        return new EventResource($event);
     }
 
     public function destroy(Event $event): Response

@@ -53,8 +53,7 @@ class AgentChatController extends Controller
         
         $chat = $this->chatService->assignToAgent($chat, $request->user());
         
-        return (new ChatResource($chat))
-            ->additional(['message' => 'Chat assigned successfully']);
+        return new ChatResource($chat);
     }
 
     public function reply(SendMessageRequest $request, Chat $chat): JsonResource
@@ -78,7 +77,6 @@ class AgentChatController extends Controller
         
         $chat = $this->chatService->resolveChat($chat, $request->user());
         
-        return (new ChatResource($chat))
-            ->additional(['message' => 'Chat resolved successfully']);
+        return new ChatResource($chat);
     }
 }

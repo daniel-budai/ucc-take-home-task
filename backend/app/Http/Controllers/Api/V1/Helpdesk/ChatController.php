@@ -41,7 +41,6 @@ class ChatController extends Controller
         );
 
         return (new ChatResource($chat))
-            ->additional(['message' => 'Chat created successfully'])
             ->response()
             ->setStatusCode(201);
     }

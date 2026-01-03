@@ -11,6 +11,9 @@ class BroadcastServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
+        // Register broadcasting auth routes for API (Sanctum)
+        Broadcast::routes(['prefix' => 'api', 'middleware' => ['api', 'auth:sanctum']]);
+
         Broadcast::channel('chat.{chatId}', function (User $user, int $chatId) {
             $chat = Chat::findOrFail($chatId);
             
