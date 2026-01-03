@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('helpdesk.agent')->prefix('helpdesk')->group(function () {
         Route::get('chats', [AgentChatController::class, 'index']);
         Route::get('chats/unassigned', [AgentChatController::class, 'unassigned']);
+        Route::get('chats/{chat}', [AgentChatController::class, 'show']);
         Route::post('chats/{chat}/assign', [AgentChatController::class, 'assign']);
         Route::post('chats/{chat}/reply', [AgentChatController::class, 'reply']);
         Route::post('chats/{chat}/resolve', [AgentChatController::class, 'resolve']);

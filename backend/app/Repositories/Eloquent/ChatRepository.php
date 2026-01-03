@@ -29,7 +29,7 @@ class ChatRepository implements ChatRepositoryInterface
             'assigned_agent_id' => $agent->id,
             'status' => ChatStatus::AGENT_HANDLING,
         ]);
-        return $chat->fresh();
+        return $chat->fresh(['messages', 'user', 'assignedAgent']);
     }
 
     public function resolveChat(Chat $chat): Chat

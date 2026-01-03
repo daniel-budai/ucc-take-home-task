@@ -13,6 +13,8 @@ class ChatResource extends JsonResource
             'id' => $this->id,
             'subject' => $this->subject,
             'status' => $this->status->value,
+            'user_id' => $this->user_id,
+            'assigned_agent_id' => $this->assigned_agent_id,
             'user' => new UserResource($this->whenLoaded('user')),
             'assigned_agent' => new UserResource($this->whenLoaded('assignedAgent')),
             'messages' => MessageResource::collection($this->whenLoaded('messages')),

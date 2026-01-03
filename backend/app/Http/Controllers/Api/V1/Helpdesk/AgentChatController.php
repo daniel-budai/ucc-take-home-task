@@ -37,6 +37,16 @@ class AgentChatController extends Controller
         return ChatResource::collection($chats);
     }
 
+    public function show(Chat $chat): JsonResource
+    {
+        $this->authorize('view', $chat);
+        
+        // Load the chat with all relationships
+        $chat->load(['messages', 'user', 'assignedAgent']);
+        
+        return new ChatResource($chat);
+    }
+
     public function assign(Request $request, Chat $chat): JsonResource
     {
         $this->authorize('assign', $chat);
