@@ -18,7 +18,7 @@ export interface AppError {
   statusCode?: number
 }
 
-function isAxiosError(error: unknown): error is AxiosError {
+export function isAxiosError(error: unknown): error is AxiosError {
   return error !== null && typeof error === 'object' && 'isAxiosError' in error
 }
 
